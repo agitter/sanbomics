@@ -25,7 +25,8 @@ def volcano(data, log2fc = 'log2FoldChange', pvalue = 'padj', symbol = 'symbol',
            pvalue_label = 'FDR',
            alpha = 1.0,
            linewidth = 1.5,
-           symmetric_x_axis = False):
+           symmetric_x_axis = False,
+           legend = True):
     
     '''
     Make a volcano plot from a pandas dataframe of directly from a csv.
@@ -92,6 +93,8 @@ def volcano(data, log2fc = 'log2FoldChange', pvalue = 'padj', symbol = 'symbol',
         Default 1.5.
     symmetric_x_axis : Boolean
         Make the x-axis limits symmetric. True/False. Default False.
+    legend : Boolean
+        Show the legend. True/False. Default True.
     '''
     
     
@@ -256,8 +259,11 @@ def volcano(data, log2fc = 'log2FoldChange', pvalue = 'padj', symbol = 'symbol',
     plt.yticks(size = 11, weight = 'bold')
     plt.xlabel("$log_{2}$ fold change", size = 15)
     plt.ylabel("-$log_{10}$ " + pvalue_label, size = 15)
-    
-    plt.legend(loc = 1, bbox_to_anchor = legend_pos, frameon = False, prop = {'weight':'bold'})
+
+    if legend:
+        plt.legend(loc = 1, bbox_to_anchor = legend_pos, frameon = False, prop = {'weight':'bold'})
+    else:
+        ax.get_legend().remove()
     
     if save == True:
         files = os.listdir()
