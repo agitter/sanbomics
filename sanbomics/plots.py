@@ -21,7 +21,11 @@ def volcano(data, log2fc = 'log2FoldChange', pvalue = 'padj', symbol = 'symbol',
            point_sizes = (15,150),
            save = False, 
            shapes = None,
-           shape_order = None):
+           shape_order = None,
+           pvalue_label = 'FDR',
+           alpha = 1.0,
+           linewidth = 1.5,
+           symmetric_x_axis = False):
     
     '''
     Make a volcano plot from a pandas dataframe of directly from a csv.
@@ -45,6 +49,7 @@ def volcano(data, log2fc = 'log2FoldChange', pvalue = 'padj', symbol = 'symbol',
     to_label : int or list
         If an int is passed, that number of top down and up genes will be labeled.
         If a list of gene Ids is passed, only those will be labeled.
+        Provide an empty list to disable labels.
     color_dict : dictionary
         dictionary to color dots by. Up to 11 categories with default colors.
         Pass list of genes and the category to group them by. {category : ['gene1', gene2]}
@@ -74,7 +79,19 @@ def volcano(data, log2fc = 'log2FoldChange', pvalue = 'padj', symbol = 'symbol',
     shape_order : list
         If you want to change the order of categories for your shapes. Pass
         a list of your categories.
-    
+    pvalue_label : string
+        The y-axis label used for the statistical significance scores
+        Default 'FDR'.
+    alpha : numeric
+        Pass alpha value to matplotlib scatter.
+        'The alpha blending value, between 0 (transparent) and 1 (opaque).'
+        Default 1.0.
+    linewidth : numeric
+        Pass linewidth value to matplotlib scatter.
+        'The linewidth of the marker edges.'
+        Default 1.5.
+    symmetric_x_axis : Boolean
+        Make the x-axis limits symmetric. True/False. Default False.
     '''
     
     
@@ -192,10 +209,14 @@ def volcano(data, log2fc = 'log2FoldChange', pvalue = 'padj', symbol = 'symbol',
     ax = sns.scatterplot(data = df, x = log2fc, y = 'nlog10',                 
                 hue = 'color', hue_order = hues, palette = colors,
                         size = baseMean, sizes = point_sizes, 
-                        style = shape_col, style_order = shape_order, markers = shapes)
-    
+                        style = shape_col, style_order = shape_order, markers = shapes,
+                        alpha=alpha, linewidth=linewidth) # edgecolor is valid arg even though current docs say edgecolors
 
-    
+    #make the x-axis symmetric
+    if symmetric_x_axis:
+        left, right = ax.get_xlim()
+        max_x = max(abs(left), abs(right))
+        ax.set_xlim(left=-max_x, right=max_x)
     
     #make labels
     texts = []
@@ -234,7 +255,7 @@ def volcano(data, log2fc = 'log2FoldChange', pvalue = 'padj', symbol = 'symbol',
     plt.xticks(size = 11, weight = 'bold')
     plt.yticks(size = 11, weight = 'bold')
     plt.xlabel("$log_{2}$ fold change", size = 15)
-    plt.ylabel("-$log_{10}$ FDR", size = 15)
+    plt.ylabel("-$log_{10}$ " + pvalue_label, size = 15)
     
     plt.legend(loc = 1, bbox_to_anchor = legend_pos, frameon = False, prop = {'weight':'bold'})
     
