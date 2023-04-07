@@ -100,7 +100,7 @@ def volcano(data, log2fc = 'log2FoldChange', pvalue = 'padj', symbol = 'symbol',
         become x limit min. Set automatically if None.
         Default None.
     y_max : numeric
-        The y limit max. Set automatically if None.
+        The y limit max. This will also set a hard-coded y limit min. Set automatically if None.
         Default None.
     legend : Boolean
         Show the legend. True/False. Default True.
@@ -237,7 +237,7 @@ def volcano(data, log2fc = 'log2FoldChange', pvalue = 'padj', symbol = 'symbol',
 
     #manually set the y-axis limit
     if y_max is not None:
-        ax.set_ylim(top=y_max)
+        ax.set_ylim(top=y_max, bottom=-0.05)
 
     #make labels
     texts = []
