@@ -26,6 +26,8 @@ def volcano(data, log2fc = 'log2FoldChange', pvalue = 'padj', symbol = 'symbol',
            alpha = 1.0,
            linewidth = 1.5,
            symmetric_x_axis = False,
+           x_max=None,
+           y_max=None,
            legend = True):
     
     '''
@@ -93,6 +95,13 @@ def volcano(data, log2fc = 'log2FoldChange', pvalue = 'padj', symbol = 'symbol',
         Default 1.5.
     symmetric_x_axis : Boolean
         Make the x-axis limits symmetric. True/False. Default False.
+    x_max : numeric
+        The x limit max. Almost always used with symmetric_x_axis=True in which case the negative of this value will
+        become x limit min. Set automatically if None.
+        Default None.
+    y_max : numeric
+        The y limit max. Set automatically if None.
+        Default None.
     legend : Boolean
         Show the legend. True/False. Default True.
     '''
@@ -217,10 +226,19 @@ def volcano(data, log2fc = 'log2FoldChange', pvalue = 'padj', symbol = 'symbol',
 
     #make the x-axis symmetric
     if symmetric_x_axis:
-        left, right = ax.get_xlim()
-        max_x = max(abs(left), abs(right))
-        ax.set_xlim(left=-max_x, right=max_x)
-    
+        #manually set the limits
+        if x_max is not None:
+            ax.set_xlim(left=-x_max, right=x_max)
+        #reset the limits based on the current limits
+        else:
+            left, right = ax.get_xlim()
+            max_x = max(abs(left), abs(right))
+            ax.set_xlim(left=-max_x, right=max_x)
+
+    #manually set the y-axis limit
+    if y_max is not None:
+        ax.set_ylim(top=y_max)
+
     #make labels
     texts = []
     for i in range(len(label_df)):
