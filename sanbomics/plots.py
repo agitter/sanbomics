@@ -28,7 +28,8 @@ def volcano(data, log2fc = 'log2FoldChange', pvalue = 'padj', symbol = 'symbol',
            symmetric_x_axis = False,
            x_max=None,
            y_max=None,
-           legend = True):
+           legend = True,
+           dpi = 300):
     
     '''
     Make a volcano plot from a pandas dataframe of directly from a csv.
@@ -104,6 +105,9 @@ def volcano(data, log2fc = 'log2FoldChange', pvalue = 'padj', symbol = 'symbol',
         Default None.
     legend : Boolean
         Show the legend. True/False. Default True.
+    dpi : numeric
+        The dpi when saving .png image files.
+        Default 300.
     '''
     
     
@@ -292,7 +296,7 @@ def volcano(data, log2fc = 'log2FoldChange', pvalue = 'padj', symbol = 'symbol',
                 plt.savefig(file_pref + '.svg', bbox_inches = 'tight')
                 break
     elif isinstance(save, str):
-        plt.savefig(save + '.png', dpi = 300, bbox_inches = 'tight')
+        plt.savefig(save + '.png', dpi = dpi, bbox_inches = 'tight')
         plt.savefig(save + '.svg', bbox_inches = 'tight')
                 
     
